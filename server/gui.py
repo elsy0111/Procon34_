@@ -258,6 +258,7 @@ def page1():
 
     Get_Matches = st.button("Get_Matches")
     if Get_Matches:
+        print("\nGet_Matches ============================")
         st.session_state.dt_now1 = datetime.now()
         st.session_state.res1, st.session_state.status_code1 = get_matches()
         st.session_state.res_fmt1 = None
