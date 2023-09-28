@@ -5,10 +5,13 @@ import json
 url = "http://127.0.0.1:3000/"
 # api_token = "ariakee5d5af0c7ad9401b6449eda7ee0e8730f24f77d5b6da2ac615aca3c1f4"
 api_token = "abc12345"
-header = {"procon-token" : api_token}
+# header = {"procon-token" : api_token}
+header = {"Content-Type" : "application/json",
+           "procon-token" : api_token}
 
 # ただの表示用
 def cout(json_):
+    print("\n", "- " * 20, "\n")
     STK = set(["structures", "masons", "walls", "territories"])
     ind = 0
     c = 0
@@ -62,6 +65,7 @@ def cout(json_):
         else:
             print(i, end = "")
     print()
+    print("\n", "- " * 20, "\n")
 
 
 
@@ -101,7 +105,7 @@ def get_match():
 
 res = get_match()
 ID = res['id']
-cout(res)
+# cout(res)
 print(ID)
 
 N = res['board']['mason']
@@ -142,7 +146,7 @@ def get_matching(id : int):
     return response
 
 res = get_matching(ID)
-cout(res)
+# cout(res)
 t = res['turn']
 
 # 行動計画更新API
@@ -157,21 +161,26 @@ t = res['turn']
 #                   ] }                               8 : 左　,  0 : 無方向, 4 : 右　, 
 #           }                                         7 : 左下,  6 : 下　　, 5 : 右下)
 
-def post_actions(id : int, turn : int, type : int, direction : int):
+def post_actions(id : int, masons : int, turn : int, type : int, direction : int):
     actions = {
-            "turn" : turn, 
-            "actions" : [
+            'turn' : turn, 
+            'actions' : [
                 {
-                    "type" : type, 
-                    "dir" : direction
+                    'type' : type, 
+                    'dir' : direction
+                }, 
+                {
+                    'type' : type, 
+                    'dir' : direction
                 }
             ]
         }
-    cout(actions)
+    print(json.dumps(actions, indent = 2))
+    # cout(actions)
     r = rq.post(url + "matches/" + str(id), headers = header, data = json.dumps(actions))
     print("post_actions status_code :", r.status_code)
+    print(r.text)
 
-# for i in range(N):
-#     post_actions(ID, t + 1, 0, 0)
+post_actions(ID, N, t + 1, 0, 0)
 
 #POST だけできない (status_code : 400)
